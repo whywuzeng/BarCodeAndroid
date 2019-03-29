@@ -1,0 +1,28 @@
+t have matching names.
+         * @param callback Iterator called for each at-rule node within the
+         * container.
+         */
+        walkAtRules(nameFilter: string | RegExp, callback: (atRule: AtRule, index: number) => any): boolean | void;
+        walkAtRules(callback: (atRule: AtRule, index: number) => any): boolean | void;
+        /**
+         * Traverses the container's descendant nodes, calling `callback` for each
+         * rule. Like container.each(), this method is safe to use if you are
+         * mutating arrays during iteration.
+         * @param selectorFilter Filters rules by selector. If provided,
+         * iteration will only happen over rules that have matching names.
+         * @param callback Iterator called for each rule node within the
+         * container.
+         */
+        walkRules(selectorFilter: string | RegExp, callback: (atRule: Rule, index: number) => any): boolean | void;
+        walkRules(callback: (atRule: Rule, index: number) => any): boolean | void;
+        walkRules(selectorFilter: any, callback?: (atRule: Rule, index: number) => any): boolean | void;
+        /**
+         * Traverses the container's descendant nodes, calling `callback` for each
+         * comment. Like container.each(), this method is safe to use if you are
+         * mutating arrays during iteration.
+         * @param callback Iterator called for each comment node within the container.
+         */
+        walkComments(callback: (comment: Comment, indexed: number) => any): void | boolean;
+        /**
+         * Passes all declaration values within the container that match pattern
+         * through

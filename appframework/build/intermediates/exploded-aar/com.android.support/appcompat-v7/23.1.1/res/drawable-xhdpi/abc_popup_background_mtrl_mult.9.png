@@ -1,0 +1,8 @@
+          });\n            }\n          }\n          expressionBinding.createBinding(element.ref, 'pan', '', args, (e) => {\n            if (!this.moving) {\n              this.panEnd(e);\n            }\n          });\n        }\n      },\n      checkNeedAutoPlay () {\n        if (this.autoPlay) {\n          this.clearAutoPlay();\n          this.autoPlayTimer = setInterval(() => {\n            this.slideTo(this.currentIndex, this.loopedIndex(this.currentIndex + 1, this.cardLength));\n          }, parseInt(this.interval));\n        }\n      },\n      clearAutoPlay () {\n        this.autoPlayTimer && clearInterval(this.autoPlayTimer);\n      },\n      // ios下当放在list中，cell被回收后，再次出现的时候需要重新为容器绑定下pan事情\n      rebind () {\n        const sliderCtn = this.$refs[`sliderCtn_${this.sliderId}`];\n        if (sliderCtn && sliderCtn.ref) {\n          expressionBinding.disableBinding(sliderCtn.ref, 'pan');\n          expressionBinding.enableBinding(sliderCtn.ref, 'pan');\n        }\n      },\n      manualSetPage (selectIndex) {\n        this.clearAutoPlay();\n        const step = this.currentIndex < selectIndex ? 1 : -1;\n        this.slideTo(this.loopedIndex(selectIndex - step, this.cardLength), selectIndex);\n        setTimeout(() => {\n          this.checkNeedAutoPlay()\n        }, 3000);\n      }\n    }\n  }\n</script>\n\n"],"sourceRoot":""}]);
+
+// exports
+
+
+/***/ }),
+/* 49 */
+/***/ (function(module

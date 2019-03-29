@@ -1,0 +1,76 @@
+    * @param sourceMapConsumer The SourceMap to be applied.
+         * @param sourceFile The filename of the source file. If omitted, sourceMapConsumer
+         * file will be used, if it exists. Otherwise an error will be thrown.
+         * @param sourceMapPath The dirname of the path to the SourceMap to be applied.
+         * If relative, it is relative to the SourceMap. This parameter is needed when
+         * the two SourceMaps aren't in the same directory, and the SourceMap to be
+         * applied contains relative source paths. If so, those relative source paths
+         * need to be rewritten relative to the SourceMap.
+         * If omitted, it is assumed that both SourceMaps are in the same directory;
+         * thus, not needing any rewriting (Supplying '.' has the same effect).
+         */
+        applySourceMap(sourceMapConsumer: any, sourceFile?: string, sourceMapPath?: string): void;
+        /**
+         * Renders the source map being generated to JSON.
+         */
+        toJSON: () => any;
+        /**
+         * Renders the source map being generated to a string.
+         */
+        toString: () => string;
+    }
+    interface ResultMessage {
+        type: string;
+        text?: string;
+        plugin?: string;
+        browsers?: string[];
+    }
+    /**
+     * Represents a plugin warning. It can be created using Result#warn().
+     */
+    interface Warning {
+        /**
+         * @returns Error position, message.
+         */
+        toString(): string;
+        /**
+         * Contains the warning message.
+         */
+        text: string;
+        /**
+         * Contains the name of the plugin that created this warning. When you
+         * call Result#warn(), it will fill this property automatically.
+         */
+        plugin: string;
+        /**
+         * The CSS node that caused the warning.
+         */
+        node: Node;
+        /**
+         * The line in the input file with this warning's source.
+         */
+        line: number;
+        /**
+         * Column in the input file with this warning's source.
+         */
+        column: number;
+    }
+    interface WarningOptions extends ResultOptions {
+        /**
+         * A word inside a node's string that should be highlighted as source
+         * of warning.
+         */
+        word?: string;
+        /**
+         * The index inside a node's string that should be highlighted as
+         * source of warning.
+         */
+        index?: number;
+    }
+    /**
+     * The CSS parser throws this error for broken CSS.
+     */
+    interface CssSyntaxError extends InputOrigin {
+        name: string;
+        /**
+         * @returns Error position, message

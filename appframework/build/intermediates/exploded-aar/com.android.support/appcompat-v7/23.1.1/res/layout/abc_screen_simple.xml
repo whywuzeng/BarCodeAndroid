@@ -1,0 +1,33 @@
+        */
+        first?: Node;
+        /**
+         * @returns The container's last child.
+         */
+        last?: Node;
+        /**
+         * @param overrides New properties to override in the clone.
+         * @returns A clone of this node. The node and its (cloned) children will
+         * have a clean parent and code style properties.
+         */
+        clone(overrides?: Object): this;
+        /**
+         * @param child Child of the current container.
+         * @returns The child's index within the container's "nodes" array.
+         */
+        index(child: Node | number): number;
+        /**
+         * Determines whether all child nodes satisfy the specified test.
+         * @param callback A function that accepts up to three arguments. The
+         * every method calls the callback function for each node until the
+         * callback returns false, or until the end of the array.
+         * @returns True if the callback returns true for all of the container's
+         * children.
+         */
+        every(callback: (node: Node, index: number, nodes: Node[]) => any, thisArg?: any): boolean;
+        /**
+         * Determines whether the specified callback returns true for any child node.
+         * @param callback A function that accepts up to three arguments. The some
+         * method calls the callback for each node until the callback returns true,
+         * or until the end of the array.
+         * @param thisArg An object to which the this keyword can refer in the
+         * callback function.

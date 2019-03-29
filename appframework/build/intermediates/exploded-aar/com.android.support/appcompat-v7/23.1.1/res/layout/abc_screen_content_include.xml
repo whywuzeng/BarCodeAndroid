@@ -1,0 +1,35 @@
+   * @returns This node for chaining.
+         */
+        moveAfter(otherNode: Node): this;
+        /**
+         * @param prop Name or code style property.
+         * @param defaultType Name of default value. It can be easily missed if the
+         * value is the same as prop.
+         * @returns A code style property value. If the node is missing the code
+         * style property (because the node was manually built or cloned), PostCSS
+         * will try to autodetect the code style property by looking at other nodes
+         * in the tree.
+         */
+        raw(prop: string, defaultType?: string): any;
+    }
+    interface NodeNewProps {
+        raws?: NodeRaws;
+    }
+    interface NodeRaws {
+        /**
+         * The space symbols before the node. It also stores `*` and `_`
+         * symbols before the declaration (IE hack).
+         */
+        before?: string;
+        /**
+         * The space symbols after the last child of the node to the end of
+         * the node.
+         */
+        after?: string;
+        /**
+         * The symbols between the property and value for declarations,
+         * selector and "{" for rules, last parameter and "{" for at-rules.
+         */
+        between?: string;
+        /**
+         * Tr
