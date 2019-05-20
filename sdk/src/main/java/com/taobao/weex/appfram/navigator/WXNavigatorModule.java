@@ -48,6 +48,7 @@ public class WXNavigatorModule extends WXModule {
 
     private final static String INSTANCE_ID = "instanceId";
     private final static String TAG = "Navigator";
+    //todo  新增bar过滤字段。intentfilter
     private final static String WEEX = "com.bar.android.intent.category.WEEX";
     private final static String URL = "url";
 

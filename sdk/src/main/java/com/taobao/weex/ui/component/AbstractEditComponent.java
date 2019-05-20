@@ -220,7 +220,7 @@ public abstract class AbstractEditComponent extends WXComponent<WXEditText> {
           }
 
           mBeforeText = s.toString();
-
+            //todo input 输入值 不响应初始值
 //          if (getDomObject() != null && getDomObject().getAttrs() != null) {
 //            Object val = getDomObject().getAttrs().get(Constants.Name.VALUE);
 //            String valString = WXUtils.getString(val, null);
@@ -413,7 +413,9 @@ public abstract class AbstractEditComponent extends WXComponent<WXEditText> {
       return;
     }
     mType = type;
-    ((EditText) getHostView()).setRawInputType(getInputType(mType));
+    //todo 使得input只能输入数字
+//    ((EditText) getHostView()).setRawInputType(getInputType(mType));
+      ((EditText) getHostView()).setInputType(getInputType(mType));
     switch (mType) {
       case Constants.Value.DATE:
       case Constants.Value.TIME:
@@ -503,7 +505,8 @@ public abstract class AbstractEditComponent extends WXComponent<WXEditText> {
     if (getHostView() == null) {
       return;
     }
-    getHostView().setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
+    //todo 这里修改了字符串长度限制
+    getHostView().setFilters(new InputFilter[]{new EnglishCharFilter(maxLength)});
   }
 
   /**

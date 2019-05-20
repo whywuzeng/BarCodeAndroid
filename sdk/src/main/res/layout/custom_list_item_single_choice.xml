@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:gravity="center_vertical"
+              android:layout_height="50dp">
+
+    <android.support.v7.widget.AppCompatImageButton
+        android:id="@+id/imagebtn"
+        android:background="@drawable/weixuanzhong"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="12dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:paddingLeft="10dp"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/textview1"
+        tools:text="CN57-百威（中国）销售有限公司上海分公司"
+        android:textSize="17sp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textColor="#222222"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:gravity="center_vertical"
+        android:checkMark="?android:attr/listChoiceIndicatorSingle"
+        android:paddingStart="16dp"
+        android:paddingEnd="10dp"/>
+
+</LinearLayout>
