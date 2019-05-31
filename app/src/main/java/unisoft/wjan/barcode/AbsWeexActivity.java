@@ -290,6 +290,7 @@ public abstract class AbsWeexActivity extends AppCompatActivity implements IWXRe
   protected void renderPageByURL(String url, String jsonInitData) {
     String isTestUrl = AppConfig.sPreferences.getString("isTestUrl", "");
       Log.e(TAG, "onCreate: "+isTestUrl );
+      //todo 用这个方法 url &加参数也可以通过
     if(isTestUrl.equals("N") || isTestUrl.equals("L") ||isTestUrl.equals("Y")){
       CommonUtils.throwIfNull(mContainer, new RuntimeException("Can't render page, container is null"));
       Map<String, Object> options = new HashMap<>();

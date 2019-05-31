@@ -21,13 +21,13 @@ public class AppConfig {
     Log.e(TAG, "getLaunchUrl: "+isTestUrl );
 
     if(isTestUrl.equals("N")) {
-      return sPreferences.getString("launch_url", "http://192.168.1.185:8081/dist/index.js");
+      return sPreferences.getString("launch_url", "http://192.168.1.185:8081/dist/login.js");
     }
     else if(isTestUrl.equals("L")){
-      return "file://assets/index.js";
+      return "file://assets/login.js";
     }
     else {
-      return url + "index.js";
+      return url + "login.js";
     }
   }
 

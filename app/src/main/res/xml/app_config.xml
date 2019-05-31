@@ -4,7 +4,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
     <name>Hello</name>
     <!--<preference name="loglevel" value="DEBUG" />-->
-    <preference name="launch_url" value="http://192.168.1.185:8081/dist/index.js" />
+    <preference name="launch_url" value="http://192.168.1.185:8081/dist/login.js" />
     <preference name="isTestUrl" value="N"/>
 
 </widget>

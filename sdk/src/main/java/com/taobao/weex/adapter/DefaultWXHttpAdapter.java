@@ -47,7 +47,7 @@ public class DefaultWXHttpAdapter implements IWXHttpAdapter {
 
   private void execute(Runnable runnable){
     if(mExecutorService==null){
-      mExecutorService = Executors.newFixedThreadPool(3);
+      mExecutorService = Executors.newFixedThreadPool(5);
     }
     mExecutorService.execute(runnable);
   }

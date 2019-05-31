@@ -317,6 +317,7 @@ public class WXPickersModule extends WXModule {
         };
 
         final ListView listView = dialog.getListView();
+        listView.setSelection(selected);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             private View previousView = selectedView;
             private int selectionColor = getColor(options, KEY_SELECTION_COLOR, Color.TRANSPARENT);
@@ -344,6 +345,8 @@ public class WXPickersModule extends WXModule {
         final ViewGroup decorView = (ViewGroup) Objects.requireNonNull(dialog.getWindow()).getDecorView();
         ViewGroup view =(ViewGroup) decorView.findViewById(R.id.buttonPanel);
         view.setVisibility(View.GONE);
+        ViewGroup contentView = (ViewGroup) decorView.findViewById(R.id.contentPanel);
+        contentView.setPadding(0,WXViewUtils.dip2px(8),0,WXViewUtils.dip2px(15));
         dialog.getWindow().getDecorView().post(new Runnable() {
             @Override
             public void run() {
@@ -400,7 +403,8 @@ public class WXPickersModule extends WXModule {
         textView.setPadding(padding, padding, padding, padding);
         textView.getPaint().setFakeBoldText(true);
         textView.setBackgroundColor(getColor(options, KEY_TITLE_BACKGROUND_COLOR, Color.TRANSPARENT));
-        textView.setTextColor(getColor(options, KEY_TITLE_COLOR, Color.BLACK));
+        textView.setTextColor(getColor(options, KEY_TITLE_COLOR, Color.RED));
+        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         textView.setText(text);
         return textView;
     }

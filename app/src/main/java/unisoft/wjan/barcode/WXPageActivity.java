@@ -1,8 +1,11 @@
 package unisoft.wjan.barcode;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -11,10 +14,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +50,7 @@ import unisoft.wjan.barcode.util.AppConfig;
 import unisoft.wjan.barcode.util.Constants;
 import unisoft.wjan.barcode.util.JurisdictionUtils;
 import unisoft.wjan.barcode.util.QuitterActivity;
+import unisoft.wjan.barcode.util.StrUtil;
 
 
 public class WXPageActivity extends AbsWeexActivity implements
@@ -88,6 +96,10 @@ public class WXPageActivity extends AbsWeexActivity implements
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_wxpage);
+    if (isApkDebugable())
+    {
+        isDebug = true;
+    }
     String isTestUrl = AppConfig.sPreferences.getString("isTestUrl", "");
       Log.e(TAG, "onCreate: "+isTestUrl );
     if (android.os.Build.VERSION.SDK_INT > 9) {
@@ -199,6 +211,31 @@ public class WXPageActivity extends AbsWeexActivity implements
 
   }
 
+    /**
+     * 判断是否debug调试模式
+     *
+     * @return
+     */
+    public static boolean isApkDebugable() {
+        try {
+            ApplicationInfo info = WXApplication.context.getApplicationInfo();
+            return (info.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 网页调试
+     */
+    private static HashMap<String, String> debugNetPage = new HashMap<>();
+
+    /**
+     * 调试标识
+     */
+    private int debugFlag;
+
   private String getUrl(Uri uri) {
     String url = uri.toString();
     String scheme = uri.getScheme();
@@ -213,8 +250,26 @@ public class WXPageActivity extends AbsWeexActivity implements
     return url;
   }
 
+    /**
+     * 加入调试界面
+     *
+     * @param page
+     */
+    public void addDebugNetPage(String page) {
+        System.out.println("加入调试页" + page);
+        try {
+            String key = page.substring(page.lastIndexOf("dist/") + "dist/".length());
+            System.out.println("加入调试页===" + key + "===" + page);
+            debugNetPage.put(key, page);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Toast.makeText(WXPageActivity.this, "加入调试页成功", Toast.LENGTH_LONG).show();
+    }
+
   protected void preRenderPage() {
-    mProgressBar.setVisibility(View.VISIBLE);
+//    mProgressBar.setVisibility(View.VISIBLE);
   }
 
   @Override
@@ -287,8 +342,12 @@ public class WXPageActivity extends AbsWeexActivity implements
     if (result != null) {
       if (result.getContents() == null) {
         Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
-      } else {
-        handleDecodeInternally(result.getContents());
+      }
+      else if (debugFlag == 1) {
+          addDebugNetPage(result.getContents());
+      }
+      else {
+          handleDecodeInternally(result.getContents());
       }
     }
     super.onActivityResult(requestCode, resultCode, data);
@@ -346,6 +405,8 @@ public class WXPageActivity extends AbsWeexActivity implements
     }
   }
 
+    AlertDialog alertDialogDebug = null;
+
 
   /**
    * 下载
@@ -388,4 +449,116 @@ public class WXPageActivity extends AbsWeexActivity implements
     loadUrl(strurl);
     QuitterActivity.addActivity(this);
   }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (isApkDebugable()) {
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0
+                    && StrUtil.nullToStr(mUri).indexOf("index.js") != -1) {
+//                String[][] btns = new String[][]{{"0", "进入上面编辑框页"}, {"1", "加载网络调试页"}
+//                        , {"2", "上传并同步数据(增量)"}, {"3", "上传并同步数据(FULL)"}, {"4", "上传"}};
+                String[][] btns = new String[][]{{"0", "进入上面编辑框页"}, {"1", "加载网络调试页"}};
+                LinearLayout linearLayout = new LinearLayout(WXPageActivity.this);
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
+                final TextView tv = new TextView(WXPageActivity.this);
+                linearLayout.addView(tv);
+                tv.append("现在有的URL\n");
+                for (Map.Entry<String, String> obj : debugNetPage.entrySet()) {
+                    tv.append(obj.getValue() + "\n");
+                }
+                final EditText et = new EditText(WXPageActivity.this);
+//                et.setText("http://192.168.0.102:8081/dist/index.js");
+                if (debugNetPage.size() > 0) {
+                    et.setText(debugNetPage.values().iterator().next());
+                } else {
+
+                    et.setText(AppConfig.getLaunchUrl(""));
+                }
+                linearLayout.addView(et);
+
+                final EditText localet = new EditText(WXPageActivity.this);
+                localet.setText("file:////storage/emulated/0/unisoft.wjan.barcode.release/bundlejs/index.js");
+                linearLayout.addView(localet);
+
+                View.OnClickListener click = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        switch (new Integer(view.getTag().toString())) {
+                            case 0: //调式页面
+                                String url = et.getText().toString();
+                                addDebugNetPage(url);
+                                JSONObject data = new JSONObject();
+                                try {
+                                    String devToolUrl = Uri.parse(url).getQueryParameter("_wx_devtool");
+                                    if (!TextUtils.isEmpty(devToolUrl)) {
+                                        WXEnvironment.sRemoteDebugProxyUrl = devToolUrl;
+                                        WXEnvironment.sDebugServerConnectable = true;
+                                        WXSDKEngine.reload(getApplication(), false);
+//                                        - Websocket Address For Native:  ws://192.168.0.106:8088/debugProxy/native   │
+//                                        - Debug Server:                  http://192.168.0.106:8088
+//                                        http://192.168.0.106:8088/weex/index.js
+                                        url = devToolUrl.substring(0, devToolUrl.indexOf("/debugProxy"));
+                                        url = url.replace("ws://", "http://") + "/weex/index.js";
+                                    }
+                                    data.put("WeexBundle", Uri.parse(url).toString());
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Intent intent = new Intent(WXPageActivity.this, WXPageActivity.class);
+                                intent.setData(Uri.parse(data.toString()));
+                                startActivity(intent);
+                                break;
+                            case 1:
+                                IntentIntegrator integrator = new IntentIntegrator(WXPageActivity.this);
+                                integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+                                integrator.setPrompt("Scan a barcode");
+                                //integrator.setCameraId(0);  // Use a specific camera of the device
+                                integrator.setBeepEnabled(true);
+                                integrator.setOrientationLocked(true);
+                                integrator.setBarcodeImageEnabled(true);
+                                integrator.setPrompt(getString(R.string.capture_qrcode_prompt));
+                                integrator.initiateScan();
+                                debugFlag = 1;
+                                break;
+                            case 2:
+//                                SyncManager.create(WXPageActivity.this).setShowProcess(true).startUpdateAppAndSync(SyncManager.SYNC_FLAG.DATAUP_AND_DATADOWN_DELTA);
+                                break;
+                            case 3:
+//                                SyncManager.create(WXPageActivity.this).setShowProcess(true).startUpdateAppAndSync(SyncManager.SYNC_FLAG.DATAUP_AND_DATADOWN_FULL);
+                                break;
+                            case 4:
+//                                SyncManager.create(WXPageActivity.this).setShowProcess(true).startSync(SyncManager.SYNC_FLAG.DATAUP);
+                                break;
+                        }
+
+                        alertDialogDebug.dismiss();
+                    }
+                };
+                for (String[] btn : btns) {
+                    Button button = new Button(WXPageActivity.this);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    lp.topMargin = 5;
+                    button.setTag(new Integer(btn[0]));
+                    button.setText(btn[1]);
+                    button.setOnClickListener(click);
+                    linearLayout.addView(button, lp);
+                }
+                alertDialogDebug = new AlertDialog.Builder(WXPageActivity.this)
+                        .setMessage("选择对应操作").setView(linearLayout)
+                        .setPositiveButton("返回", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                finish();
+                            }
+                        })
+                        .setNeutralButton("取消", null).show();
+
+                return true;
+
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }

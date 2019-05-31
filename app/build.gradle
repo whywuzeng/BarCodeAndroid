@@ -5,6 +5,9 @@ android {
     compileSdkVersion project.compileSdkVersion
     buildToolsVersion project.buildToolsVersion
 
+    dexOptions {
+        javaMaxHeapSize "2280m"
+    }
     defaultConfig {
         applicationId "unisoft.wjan.barcode"
         minSdkVersion project.appMinSdkVersion
@@ -116,4 +119,8 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.google.zxing:core:3.2.1'
     compile project(':sdk')
+    //gif
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+//    compile 'com.github.bumptech.glide:glide:4.7.1'
+//    compile 'com.github.bumptech.glide:compiler:4.7.1'
 }

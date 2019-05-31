@@ -9,6 +9,8 @@
     <android.support.v7.widget.AppCompatImageButton
         android:id="@+id/imagebtn"
         android:background="@drawable/weixuanzhong"
+        android:focusable ="false"
+        android:clickable ="false"
         android:gravity="center_vertical"
         android:layout_marginLeft="12dp"
         android:layout_width="20dp"
